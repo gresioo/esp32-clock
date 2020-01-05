@@ -17,7 +17,7 @@
  * @param lengthOfData length of data
  * @return Returns error code
  */ 
-int sendToDisplay(int * data,int lengthOfData)
+esp_err_t sendToDisplay(int8_t command,int * data,int lengthOfData)
 /**
  * @brief Writes one char to display device
  * 
@@ -26,4 +26,4 @@ int sendToDisplay(int * data,int lengthOfData)
  * @param position Where to position the char (in lines)
  * @return Returns error code
  */
-int writeToDisplay(char textin,int position)
+esp_err_t writeToDisplay(char textin,int position)

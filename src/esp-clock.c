@@ -9,21 +9,22 @@
 #include <stdlib.h>
 #include "freertos/queue.h"
 #include "driver/gpio.h"
+#include "esp-clock.h"
+
 
 esp_err_t waitForAWhile()
 {
-    // vTaskDelay(1/portTICK_PERIOD_MS);
+    vTaskDelay(1/portTICK_PERIOD_MS);
     return ESP_OK;
 }
 
 esp_err_t sendOneBit(uint32_t level)
 {
-    gpio_set_level(DISPLAY_WR,0);
-    waitForAWhile();
     gpio_set_level(DISPLAY_DATA,level);
     waitForAWhile();
     gpio_set_level(DISPLAY_WR,1);
     waitForAWhile();
+    gpio_set_level(DISPLAY_WR,0);
     waitForAWhile();
     printf("%i",level);
     return ESP_OK;
@@ -55,6 +56,21 @@ esp_err_t sendToDisplay(int8_t command,int * data,int lengthOfData)
     gpio_set_level(DISPLAY_CS,1);
     return ESP_OK;
 }
+
+
+esp_err_t sendCommandToDisplay(int8_t command)
+{
+    int i,j; //generic counters
+    int column; //column to be stored and then sent out
+    // CS to high
+    gpio_set_level(DISPLAY_CS,0);
+    //sending command (3 bits)
+    for (i=0;i<3;i++){
+        sendOneBit((command&(1<<i))/(1<<i)); //send ith bit
+    }
+    return ESP_OK;
+}
+
 
 void app_main()
 {
